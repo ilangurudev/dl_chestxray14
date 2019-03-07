@@ -14,7 +14,7 @@ import numpy as np
 def get_model(model_dir):
     path = Path(model_dir)
     empty_data = vision.ImageDataBunch.load_empty(path)
-    learn = vision.create_cnn(empty_data, vision.models.vgg16_bn, pretrained=False).load('stage1')
+    learn = vision.cnn_learner(empty_data, vision.models.resnet50, pretrained=False).load('stage2')
     return learn
 
 def get_prediction():
@@ -23,12 +23,12 @@ def get_prediction():
     predict_class = learn.data.classes # str(predict_class).split(';')
     predict_values = predict_values.tolist()
     diagnoses = zip(predict_class, predict_values)
-    # print([(i,j) for i,j in diagnoses])
+    l = [len(i) for i in predict_class]
     diagnoses = sorted(diagnoses, key = lambda t: t[1], reverse=True)
-    textvar = "The xray shows signs of "
+    textvar = f"{'Condition'.ljust(max(l))} - Probability"
     for d,p in diagnoses:
         print(d)
-        textvar += '\n' + f'{d} with probability {p*100}%'
+        textvar += '\n' + f'{d.ljust(max(l))} - {round(p*100, 2)}%'
     print(textvar)
     t1.delete(0.0, tkinter.END)
     t1.insert('insert', textvar+'\n')
