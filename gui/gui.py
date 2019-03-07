@@ -1,5 +1,4 @@
 import tkinter
-
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk
@@ -10,11 +9,12 @@ from pathlib import Path
 
 import numpy as np
 # from ttkthemes import ThemedTk
+# from tkinter import ttk
 
 def get_model(model_dir):
     path = Path(model_dir)
     empty_data = vision.ImageDataBunch.load_empty(path)
-    learn = vision.cnn_learner(empty_data, vision.models.resnet50, pretrained=False).load('stage2')
+    learn = vision.cnn_learner(empty_data, vision.models.resnet50, pretrained=False).load('stage1')
     return learn
 
 def get_prediction():
@@ -27,9 +27,9 @@ def get_prediction():
     diagnoses = sorted(diagnoses, key = lambda t: t[1], reverse=True)
     textvar = f"{'Condition'.ljust(max(l))} - Probability"
     for d,p in diagnoses:
-        print(d)
+        # print(d)
         textvar += '\n' + f'{d.ljust(max(l))} - {round(p*100, 2)}%'
-    print(textvar)
+    # print(textvar)
     t1.delete(0.0, tkinter.END)
     t1.insert('insert', textvar+'\n')
     t1.update()
@@ -53,8 +53,11 @@ learn = get_model('../model_data')
 
 
 window = Tk()
-# window = ThemedTk("arc")
-window.title = 'Chest X-ray classifier'
+# window = ThemedTk(theme="arc")
+# s = ttk.Style(window)
+# s.theme_use("alt")
+
+window.title('Chest X-ray classifier')
 window.geometry('400x680')
 canvas = Canvas(window, width=375,height=375, bd=0,bg='white')
 canvas.grid(row=1, column=1, padx=10, pady=10)
@@ -62,7 +65,7 @@ canvas.grid(row=1, column=1, padx=10, pady=10)
 
 e = StringVar()
 
-submit_button = Button(window, text ='Open', command = show_image)
+submit_button = Button(window, text ='Open and Scan', command = show_image)
 submit_button.grid(row=2, column=1)
 
 t1=Text(window,bd=0, width=53, height=16, font='Fixdsys -14')
