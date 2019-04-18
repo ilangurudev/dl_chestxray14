@@ -15,8 +15,8 @@ import numpy as np
 
 def get_model(model_dir):
     path = Path(model_dir)
-    empty_data = vision.ImageDataBunch.load_empty(path)
-    learn = vision.cnn_learner(empty_data, vision.models.resnet50, pretrained=False).load('stage1')
+    empty_data = vision.ImageDataBunch.load_empty(path, fname='stage-5-data.pkl')
+    learn = vision.cnn_learner(empty_data, vision.models.densenet121, pretrained=False).load('stage-5')
     return learn
 
 def get_prediction():
